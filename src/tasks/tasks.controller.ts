@@ -13,6 +13,11 @@ export class TasksController {
     return this.tasksService.create(createTaskDto);
   }
 
+  @Get('icons')
+  findAllTaskIcons() {
+    return this.tasksService.findAllIcons();
+  }
+
   @Get('statuses')
   findAllTaskStatuses() {
     return this.tasksService.findAllStatuses();

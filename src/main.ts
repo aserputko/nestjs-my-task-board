@@ -14,11 +14,7 @@ async function bootstrap() {
     }),
   );
 
-  const options = new DocumentBuilder()
-    .setTitle('My Task Board')
-    .setDescription('Coffee application')
-    .setVersion('1.0')
-    .build();
+  const options = new DocumentBuilder().setTitle('My Task Board').setVersion('1.0').build();
 
   const document = SwaggerModule.createDocument(app, options);
 
