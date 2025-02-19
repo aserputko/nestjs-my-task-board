@@ -15,7 +15,7 @@ export class TaskStatusTable1739823530022 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-      DROP TABLE task_status;
+      DROP TABLE IF EXISTS task_status;
     `);
   }
 }

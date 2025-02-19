@@ -14,7 +14,7 @@ export class TaskIconTable1739832568775 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-      DROP TABLE task_icon;
+      DROP TABLE IF EXISTS task_icon;
     `);
   }
 }

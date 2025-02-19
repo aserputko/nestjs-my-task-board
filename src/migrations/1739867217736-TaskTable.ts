@@ -27,7 +27,7 @@ export class TaskTable1739867217736 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-        DROP TABLE task;       
+        DROP TABLE IF EXISTS task;       
     `);
   }
 }
