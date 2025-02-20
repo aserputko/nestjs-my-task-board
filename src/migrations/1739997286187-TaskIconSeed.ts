@@ -1,6 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class TaskIconSeed1739832568776 implements MigrationInterface {
+export class TaskIconSeed1739997286187 implements MigrationInterface {
+  name = 'TaskIconSeed1739997286187';
+
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       INSERT INTO task_icon (id, name)

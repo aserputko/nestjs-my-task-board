@@ -1,4 +1,5 @@
 import * as dotenv from 'dotenv';
+import { TaskTables1739997286185 } from 'src/migrations/1739997286185-TaskTables';
 import { TaskIcon } from 'src/tasks/entities/task-icon.entity';
 import { TaskStatus } from 'src/tasks/entities/task-status.entity';
 import { Task } from 'src/tasks/entities/task.entity';
@@ -13,11 +14,5 @@ export default new DataSource({
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   entities: [Task, TaskStatus, TaskIcon],
-  migrations: [
-    // TaskStatusTable1739823530022,
-    // TaskStatusSeed1739823530023,
-    // TaskIconTable1739832568775,
-    // TaskIconSeed1739832568776,
-    // TaskTable1739867217736,
-  ],
+  migrations: [TaskTables1739997286185],
 });
