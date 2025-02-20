@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PaginationQueryDto } from '../shared/dto/pagination-query.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskIcon } from './entities/task-icon.entity';
 import { TaskStatus } from './entities/task-status.entity';
@@ -69,7 +69,7 @@ export class TasksService {
     });
 
     if (!task) {
-      throw new NotFoundException(`Coffee #${id} not found`);
+      throw new NotFoundException(`Task #${id} not found`);
     }
     return this.taskRepository.save(task);
   }

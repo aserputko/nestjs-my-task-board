@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TasksModule } from './tasks/tasks.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,9 +15,10 @@ import { TasksModule } from './tasks/tasks.module';
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
       autoLoadEntities: true,
-      // synchronize: true,
+      synchronize: true,
     }),
     TasksModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
