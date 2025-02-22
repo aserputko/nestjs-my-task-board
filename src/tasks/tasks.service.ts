@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { FindOptionsRelations, Repository } from 'typeorm';
 import { PaginationQueryDto } from '../shared/dto/pagination-query.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
@@ -8,6 +9,7 @@ import { TaskIcon } from './entities/task-icon.entity';
 import { TaskStatus } from './entities/task-status.entity';
 import { Task } from './entities/task.entity';
 
+type activeUserId = FindOptionsRelations<User>;
 @Injectable()
 export class TasksService {
   constructor(
@@ -17,12 +19,15 @@ export class TasksService {
     private readonly taskStatusRepository: Repository<TaskStatus>,
     @InjectRepository(TaskIcon)
     private readonly taskIconRepository: Repository<TaskIcon>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  async findAll(createdBy: number, query: PaginationQueryDto) {
+  async findAll(userId: number, query: PaginationQueryDto) {
     const { limit, offset } = query;
+
     return this.taskRepository.find({
-      where: { createdBy },
+      where: { user: { id: userId } },
       relations: {
         status: true,
         icon: true,
@@ -32,9 +37,9 @@ export class TasksService {
     });
   }
 
-  async findOne(id: number, createdBy: number) {
+  async findOne(id: number, userId: number) {
     const task = await this.taskRepository.findOne({
-      where: { id, createdBy },
+      where: { id, user: { id: userId } },
       relations: {
         status: true,
         icon: true,
@@ -46,21 +51,22 @@ export class TasksService {
     return task;
   }
 
-  async create(createdBy: number, createTaskDto: CreateTaskDto) {
-    const taskStatus = await this.findOneStatuses(createTaskDto.statusId);
+  async create(userId: number, createTaskDto: CreateTaskDto) {
+    const taskStatus = await this.findOneStatus(createTaskDto.statusId);
     const taskIcon = await this.findOneIcon(createTaskDto.iconId);
+    const user = await this.findOneUser(userId);
 
     const task = this.taskRepository.create({
       ...createTaskDto,
       status: taskStatus,
       icon: taskIcon,
-      createdBy,
+      user,
     });
     return this.taskRepository.save(task);
   }
 
   async update(id: number, updateTaskDto: UpdateTaskDto) {
-    const taskStatus = await this.findOneStatuses(updateTaskDto.statusId || 0);
+    const taskStatus = await this.findOneStatus(updateTaskDto.statusId || 0);
     const taskIcon = await this.findOneIcon(updateTaskDto.iconId || 0);
 
     const task = await this.taskRepository.preload({
@@ -85,7 +91,7 @@ export class TasksService {
     return this.taskStatusRepository.find();
   }
 
-  async findOneStatuses(id: number) {
+  async findOneStatus(id: number) {
     const taskStatus = await this.taskStatusRepository.findOne({
       where: { id: +id },
     });
@@ -107,5 +113,15 @@ export class TasksService {
       throw new NotFoundException(`TaskIcon #${id} not found`);
     }
     return taskIcon;
+  }
+
+  async findOneUser(id: number) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
+    if (!user) {
+      throw new NotFoundException(`User #${id} not found`);
+    }
+    return user;
   }
 }

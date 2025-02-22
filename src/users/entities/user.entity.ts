@@ -25,6 +25,6 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @OneToMany(() => Task, (task) => task.createdBy, { onDelete: 'CASCADE' })
+  @OneToMany(() => Task, (task) => task.user)
   tasks: Task;
 }

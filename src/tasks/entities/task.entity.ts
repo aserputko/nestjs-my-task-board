@@ -20,8 +20,6 @@ export class Task {
   @ManyToOne(() => TaskStatus, (taskStatus) => taskStatus.task)
   status: TaskStatus;
 
-  // @One(() => User, (user) => user.task, { onDelete: 'CASCADE' })
-  // @Column()
-  @ManyToOne(() => User, (user) => user.tasks)
-  createdBy: number;
+  @ManyToOne(() => User, (user) => user.tasks, { onDelete: 'CASCADE' })
+  user: User;
 }
