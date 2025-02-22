@@ -19,9 +19,10 @@ export class TasksService {
     private readonly taskIconRepository: Repository<TaskIcon>,
   ) {}
 
-  async findAll(query: PaginationQueryDto) {
+  async findAll(createdBy: number, query: PaginationQueryDto) {
     const { limit, offset } = query;
     return this.taskRepository.find({
+      where: { createdBy },
       relations: {
         status: true,
         icon: true,
@@ -31,9 +32,9 @@ export class TasksService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, createdBy: number) {
     const task = await this.taskRepository.findOne({
-      where: { id: +id },
+      where: { id, createdBy },
       relations: {
         status: true,
         icon: true,
@@ -45,7 +46,7 @@ export class TasksService {
     return task;
   }
 
-  async create(createTaskDto: CreateTaskDto) {
+  async create(createdBy: number, createTaskDto: CreateTaskDto) {
     const taskStatus = await this.findOneStatuses(createTaskDto.statusId);
     const taskIcon = await this.findOneIcon(createTaskDto.iconId);
 
@@ -53,6 +54,7 @@ export class TasksService {
       ...createTaskDto,
       status: taskStatus,
       icon: taskIcon,
+      createdBy,
     });
     return this.taskRepository.save(task);
   }
@@ -75,7 +77,7 @@ export class TasksService {
   }
 
   async remove(id: number) {
-    const task = await this.findOne(id);
+    const task = await this.findOne(0, id);
     return this.taskRepository.remove(task);
   }
 
