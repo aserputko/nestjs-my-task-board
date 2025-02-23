@@ -1,9 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ActiveUserId } from 'src/auth/auth-active-user-id.decorator';
-import { PaginationQueryDto } from '../shared/dto/pagination-query.dto';
+import { PaginationResultDto, toPaginationResult } from 'src/shared/dto/pagination.dto';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { GetTasksDto } from './dto/get-tasks.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { Task } from './entities/task.entity';
 import { TasksService } from './tasks.service';
 
 @ApiBearerAuth()
@@ -12,8 +14,12 @@ export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
   @Get()
-  findAll(@ActiveUserId() createdBy: number, @Query() query: PaginationQueryDto) {
-    return this.tasksService.findAll(createdBy, query);
+  async findAll(
+    @ActiveUserId() createdBy: number,
+    @Query() query: GetTasksDto,
+  ): Promise<PaginationResultDto<Task>> {
+    const { tasks, count } = await this.tasksService.findAll(createdBy, query);
+    return toPaginationResult(tasks, count, query.pageSize, query.pageNumber);
   }
 
   @Get('icons')

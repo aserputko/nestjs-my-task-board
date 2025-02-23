@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { toSkillOption } from 'src/shared/dto/pagination.dto';
 import { User } from 'src/users/entities/user.entity';
-import { FindOptionsRelations, Repository } from 'typeorm';
-import { PaginationQueryDto } from '../shared/dto/pagination-query.dto';
+import { FindOptionsRelations, Like, Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { GetTasksDto } from './dto/get-tasks.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskIcon } from './entities/task-icon.entity';
 import { TaskStatus } from './entities/task-status.entity';
@@ -23,18 +24,24 @@ export class TasksService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findAll(userId: number, query: PaginationQueryDto) {
-    const { limit, offset } = query;
+  async findAll(userId: number, query: GetTasksDto) {
+    const { pageSize, pageNumber, search, orderBy, orderDirection } = query;
 
-    return this.taskRepository.find({
-      where: { user: { id: userId } },
+    const count = await this.taskRepository.count();
+    const tasks = await this.taskRepository.find({
+      where: { user: { id: userId }, name: Like(`%${search || ''}%`) },
       relations: {
         status: true,
         icon: true,
       },
-      skip: offset,
-      take: limit,
+      skip: toSkillOption(pageNumber, pageSize),
+      take: pageSize,
+      order: {
+        [orderBy || 'id']: orderDirection || 'ASC',
+      },
     });
+
+    return { count, tasks };
   }
 
   async findOne(id: number, userId: number) {
