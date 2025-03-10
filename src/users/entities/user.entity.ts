@@ -1,4 +1,3 @@
-import { Task } from 'src/tasks/entities/task.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Task } from '../../tasks/entities/task.entity';
 
 @Entity()
 export class User {

@@ -1,5 +1,5 @@
-import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../../users/entities/user.entity';
 import { TaskIcon } from './task-icon.entity';
 import { TaskStatus } from './task-status.entity';
 

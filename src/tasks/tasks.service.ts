@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { toSkillOption } from 'src/shared/dto/pagination.dto';
-import { User } from 'src/users/entities/user.entity';
 import { FindOptionsRelations, Like, Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksDto } from './dto/get-tasks.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
